@@ -1,0 +1,29 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/userConsole/userConsole",
+    "pages/storageConsole/storageConsole",
+    "pages/databaseGuide/databaseGuide",
+    "pages/addFunction/addFunction",
+    "pages/deployFunctions/deployFunctions",
+    "pages/chooseLib/chooseLib",
+    "pages/openapi/openapi"
+  ],
+  "window": {
+    "backgroundColor": "#F6F6F6",
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#F6F6F6",
+    "navigationBarTitleText": "Just Do！",
+    "navigationBarTextStyle": "black"
+  },
+  "usingComponents": {
+    "van-button": "/lib/vant-weapp/button/index",
+    "van-cell": "/lib/vant-weapp/cell/index",
+    "van-cell-group": "/lib/vant-weapp/cell-group/index",
+    "van-field": "/lib/vant-weapp/field/index",
+    "van-icon": "/lib/vant-weapp/icon/index",
+    "van-switch": "/lib/vant-weapp/switch/index",
+    "van-checkbox": "/lib/vant-weapp/checkbox/index"
+  },
+  "sitemapLocation": "sitemap.json"
+}

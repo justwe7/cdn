@@ -1,0 +1,86 @@
+<!-- index.wxml -->
+<view class="container">
+  <!-- <view>
+    <view>所有任务</view>
+  </view> -->
+  <!-- <view class="m-list-group">
+    <view class="m-list-item">
+      今日
+      <view class="badge {{expand && 'z-expand'}}" bind:tap="handleExpand" wx:if="{{todayTaskList.length}}">{{todayTaskList.length}}</view>
+      <van-icon name="plus" wx:else />
+    </view>
+    <view class="m-list-content {{expand && 'z-expand'}}">
+      <view class="u-item {{checked && 'z-finish'}}">
+        <van-checkbox value="{{ checked }}" checked-color="#666" icon-size="12px" label-position="right" bind:change="onChange">
+          今晚打老虎
+        </van-checkbox>
+        <view class="u-item-line"></view>
+      </view>
+      <view class="u-item {{checked && 'z-finish'}}">
+        <van-checkbox value="{{ checked }}" checked-color="#666" icon-size="12px" label-position="right" bind:change="onChange">
+          今晚打老虎今晚打老虎今晚打老虎今晚打老虎今晚打老虎今晚打老虎今晚打老虎今晚打老虎今晚打老虎今晚打老虎今晚打老虎
+        </van-checkbox>
+        <view class="u-item-line"></view>
+      </view>
+    </view>
+  </view> -->
+  <view class="m-list-group" wx:for="{{taskGroup}}" wx:key="idx" wx:for-item="taskItem" wx:for-index="idx">
+    <view class="m-list-item">
+      {{taskItem.title}}
+      <view class="badge {{taskItem.expand && 'z-expand'}}" data-idx="{{idx}}" bind:tap="handleExpand" wx:if="{{taskItem.taskList.length}}">{{taskItem.taskList.length}}</view>
+      <van-icon name="plus" wx:else />
+    </view>
+    <view class="m-list-content {{taskItem.expand && 'z-expand'}}">
+      <view class="u-item {{item.finsh && 'z-finish'}}" wx:for="{{taskItem.taskList}}" wx:key="item.task">
+        <van-checkbox value="{{ item.finsh }}" checked-color="#666" icon-size="12px" label-position="right" data-group="{{idx}}" data-idx="{{index}}" bind:change="onChange">
+          {{item.task}}
+        </van-checkbox>
+        <view class="u-item-line"></view>
+      </view>
+    </view>
+  </view>
+  <!-- <view class="m-list-group">
+    <view class="m-list-item">
+      今日
+      <view class="badge {{expand[0] && 'z-expand'}}" data-idx="{{0}}" bind:tap="handleExpand" wx:if="{{todayTaskList.length}}">{{todayTaskList.length}}</view>
+      <van-icon name="plus" wx:else />
+    </view>
+    <view class="m-list-content {{expand[0] && 'z-expand'}}">
+      <view class="u-item {{item.finsh && 'z-finish'}}" wx:for="{{todayTaskList}}" wx:key="item.task">
+        <van-checkbox value="{{ item.finsh }}" checked-color="#666" icon-size="12px" label-position="right" data-idx="{{index}}" bind:change="onChange">
+          {{item.task}}
+        </van-checkbox>
+        <view class="u-item-line"></view>
+      </view>
+    </view>
+  </view>
+  <view class="m-list-group">
+    <view class="m-list-item">
+      明日
+      <view class="badge {{expand[1] && 'z-expand'}}"  data-idx="{{1}}" bind:tap="handleExpand" wx:if="{{taskList.length}}">{{taskList.length}}</view>
+      <van-icon name="plus" wx:else />
+    </view>
+    <view class="m-list-content {{expand[1] && 'z-expand'}}">
+      <view class="u-item {{item.finsh && 'z-finish'}}" wx:for="{{taskList}}" wx:key="item.task">
+        <van-checkbox value="{{ item.finsh }}" checked-color="#666" icon-size="12px" label-position="right" data-idx="{{index}}" bind:change="onChange">
+          {{item.task}}
+        </van-checkbox>
+        <view class="u-item-line"></view>
+      </view>
+    </view>
+  </view> -->
+  <view class="g-bottom">
+    <view class="m-fask-tip {{newtask.length && 'z-expand'}}">
+      <view>
+        <view class="tip {{index === tipTimeIdx && 'z-checked'}}" bind:tap="handleSetTipTime" data-idx="{{index}}" wx:key="index" wx:for="{{quickTip}}"><van-icon name="bell" size="34rpx" style="margin-right: 10rpx; vertical-align: middle"/>{{item}}</view>
+      </view>
+      <!-- <view class="tip"><van-icon name="bell" size="34rpx" style="margin-right: 10rpx"/>以后再说</view> -->
+    </view>
+    <van-cell-group>
+      <van-field value="{{ newtask }}" center clearable placeholder="我想..." border="{{ false }}" use-button-slot bind:change="onInput" bind:confirm="handleAddTask">
+        <van-icon name="upgrade" slot="button" size="60rpx" color="#30A9DE" wx:if="{{newtask.length}}" bind:tap="handleAddTask" />
+        <van-icon name="upgrade" slot="button" size="60rpx" wx:else />
+      </van-field>
+    </van-cell-group>
+  </view>
+</view>

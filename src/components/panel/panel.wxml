@@ -1,0 +1,18 @@
+<view class="panel">
+  <view class="header" wx:if="{{title || desc || extra}}">
+    <view class="title">
+      <text>{{title}}</text>
+      <view class="extra" >
+        <slot name="extra" wx:if="{{useSlotExtra}}"></slot>
+        <block wx:else>{{extra}}</block>
+      </view>
+    </view>
+    <view class="desc" wx:if="{{desc}}">{{desc}}</view>
+  </view>
+  <slot name="header" wx:else></slot>
+
+  <view class="body">
+    <slot></slot>
+  </view>
+  <!-- <slot name="after"></slot> -->
+</view>
