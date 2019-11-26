@@ -11,6 +11,7 @@
 		"checkInvalidKey": true
 	},
 	"miniprogramRoot": "dist/",
+	"cloudfunctionRoot": "cloudfunctions/",
 	"compileType": "miniprogram",
 	"appid": "wxc9d32cd8b4c4649d",
 	"projectname": "wx-auto_club",
@@ -34,9 +35,20 @@
 			"currentL": -1,
 			"list": []
 		},
-		"miniprogram": {
+		"gamePlugin": {
 			"current": -1,
 			"list": []
+		},
+		"miniprogram": {
+			"current": -1,
+			"list": [
+				{
+					"id": -1,
+					"name": "pages/taskDetail/taskDetail",
+					"pathName": "pages/taskDetail/taskDetail",
+					"scene": null
+				}
+			]
 		}
 	}
 }

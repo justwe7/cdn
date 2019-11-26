@@ -51,7 +51,7 @@ module.exports = {
         to: "",
         ignore: [
           "*.scss",
-          "pages/**/*.png",
+          // "pages/**/*.png",
           "pages/**/*.jpg",
           "pages/**/*.jpeg"
         ],

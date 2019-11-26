@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/taskDetail/taskDetail",
     "pages/userConsole/userConsole",
     "pages/storageConsole/storageConsole",
     "pages/databaseGuide/databaseGuide",
@@ -23,7 +24,10 @@
     "van-field": "/lib/vant-weapp/field/index",
     "van-icon": "/lib/vant-weapp/icon/index",
     "van-switch": "/lib/vant-weapp/switch/index",
-    "van-checkbox": "/lib/vant-weapp/checkbox/index"
+    "van-checkbox": "/lib/vant-weapp/checkbox/index",
+    "van-dialog": "/lib/vant-weapp/dialog/index"
+  },
+  "plugins": {
   },
   "sitemapLocation": "sitemap.json"
 }

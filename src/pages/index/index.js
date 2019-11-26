@@ -1,29 +1,21 @@
 //index.js
 const app = getApp()
+const db = wx.cloud.database()
+const _ = db.command
 
 Page({
   data: {
     checked: false,
-    expand: [false, false, false],
     newtask: '',
     taskGroup: [
       {
         title: '今日',
-        expan: false,
-        taskList: [
-          {
-            task: '今晚打老虎',
-            finsh: true
-          },
-          {
-            task: '今晚打产品',
-            finsh: false
-          }
-        ]
+        expand: true,
+        taskList: []
       },
       {
         title: '明日',
-        expan: false,
+        expand: false,
         taskList: [
           {
             task: '今晚打老虎',
@@ -33,7 +25,7 @@ Page({
       },
       {
         title: '以后的事',
-        expan: false,
+        expand: false,
         taskList: []
       }
     ],
@@ -49,9 +41,12 @@ Page({
       }
     ], */
     tipTimeIdx: -1,
+    headHeight: app.globalData.headHeight,
+    capsuleHeight: app.globalData.screenConfig.capsuleHeight,
+    statusBarHeight: app.globalData.screenConfig.statusBarHeight,
     quickTip: [
+      '睡前22:00',
       '明早08:00',
-      '下周',
       '以后再说'
     ],
     avatarUrl: './user-unlogin.png',
@@ -68,7 +63,14 @@ Page({
       })
       return
     }
-
+    this.fetchList()
+    app.getUserOpenIdViaCloud()
+      .then(openid => {
+        console.log(openid)
+      })
+      .catch(err => {
+        console.error(err)
+      })
     // 获取用户信息
     wx.getSetting({
       success: res => {
@@ -86,20 +88,144 @@ Page({
       }
     })
   },
+  getOpenId() {
+    wx.login({
+      success: res => {
+        // Vue.prototype.$openid = res.code;
+        wx.request({
+          url: `${self.baseUrl}/applet/getOpenId`,
+          data: { jsCode: res.code },
+          success(res) {
+            /* if (data.result != 200 ) {
+            } */
+            const openid = JSON.parse(res.data.data).openid
+            self.setKxUserInfo(openid)
+            Vue.prototype.$openid = openid
+            getApp().globalData.openid = openid
+            if (getApp().globalData.userOpenIDReadyCallback) {
+              getApp().globalData.userOpenIDReadyCallback(openid)
+            }
+            self.initClubInfo(option)
+            self.setUserAuthState()
+          },
+          fail(err) {
+            wx.showToast({ title: '接口请求出错', icon: 'none' })
+          }
+        })
+      },
+      fail: err => {}
+    })
+  },
+  handleAddItemTask(e) {
+    wx.cloud.callFunction({
+      name: 'openapi',
+      data: {
+        action: 'sendTemplateMessage',
+        formId: e.detail.formId,
+      },
+      success: res => {
+        console.warn('[云函数] [openapi] templateMessage.send 调用成功：', res)
+        wx.showModal({
+          title: '发送成功',
+          content: '请返回微信主界面查看',
+          showCancel: false,
+        })
+        wx.showToast({
+          title: '发送成功，请返回微信主界面查看',
+        })
+        this.setData({
+          templateMessageResult: JSON.stringify(res.result)
+        })
+      },
+      fail: err => {
+        wx.showToast({
+          icon: 'none',
+          title: '调用失败',
+        })
+        console.error('[云函数] [openapi] templateMessage.send 调用失败：', err)
+      }
+    })
+  },
   handleSetTipTime(e) {
     const {currentTarget: {dataset: { idx }}} = e
     this.setData({
       tipTimeIdx: idx
     })
   },
+  fetchList() {
+    const groups = {
+      list1: +new Date(`${GetDateStr()} 23:59:59`),
+      list2: +new Date(`${GetDateStr(1)} 23:59:59`),
+    }
+    db.collection('demo').where({
+      remindDate: _.lt(groups.list1)
+    })
+    .get({
+      success: (res) => {
+        console.log(res.data)
+        const list = `taskGroup[0].taskList`
+        this.setData({
+          [list]: res.data
+        })
+      }
+    })
+    db.collection('demo').where({
+      remindDate: _.lt(groups.list2)
+    })
+    .get({
+      success: (res) => {
+        const list = `taskGroup[1].taskList`
+        this.setData({
+          [list]: res.data
+        })
+      }
+    })
+    db.collection('demo').where({
+      remindDate: _.gte(groups.list2).or(_.eq(''))
+    })
+    .get({
+      success: (res) => {
+        const list = `taskGroup[2].taskList`
+        this.setData({
+          [list]: res.data
+        })
+      }
+    })
+    db.collection('demo').get().then(res => {
+      // res.data 是一个包含集合中有权限访问的所有记录的数据，不超过 20 条
+      console.log(res.data)
+    })
+  },
   handleAddTask() {
-    this.setData({
-      taskList: [...this.data.taskList, {
+    const date = new Date()
+    const quickTime = [
+      +new Date(`${GetDateStr()} 22:00:00`),
+      +new Date(`${GetDateStr(1)} 08:00:00`),
+      ''
+    ]
+    const taskDateIdx = this.data.tipTimeIdx > -1 ? this.data.tipTimeIdx : this.data.taskGroup.length-1
+    const curTaskList = `taskGroup[${taskDateIdx}].taskList`
+    db.collection('demo').add({
+      // data 字段表示需新增的 JSON 数据
+      data: {
         task: this.data.newtask,
+        creatDate: +date,
+        remindDate: quickTime[taskDateIdx],
+        content: '',
         finsh: false
-      }],
-      tipTimeIdx: -1,
-      newtask: ""
+      },
+      success: (res) => {
+        console.log(res._id)
+        this.setData({
+          [curTaskList]: [...this.data.taskGroup[taskDateIdx].taskList, {
+            task: this.data.newtask,
+            _id: res._id,
+            finsh: false
+          }],
+          tipTimeIdx: -1,
+          newtask: ""
+        })
+      }
     })
   },
   onInput(e) {
@@ -117,12 +243,22 @@ Page({
   onChange(e) {
     // target 触发事件的源组件。
 // currentTarget 事件绑定的当前组件。
-    const {currentTarget: {dataset: { idx, group }}, detail} = e
+    const {currentTarget: {dataset: { idx, group, id }}, detail} = e
     const curState = `taskGroup[${group}].taskList[${idx}].finsh`
-    // this.data.taskList[idx].finsh = detail
-    this.setData({
-      [curState]: detail
+    console.log(id)
+    db.collection('demo').doc(id).update({
+      data: {
+        finsh: detail
+      },
+      success: (res) => {
+        console.log(res)
+        this.setData({
+          [curState]: detail
+        })
+      }
     })
+    // this.data.taskList[idx].finsh = detail
+    
   },
 
   onGetUserInfo: function(e) {
@@ -207,3 +343,13 @@ Page({
   },
 
 })
+
+
+function GetDateStr(AddDayCount = 0) {
+  const dd = new Date();
+  dd.setDate(dd.getDate()+AddDayCount);//获取AddDayCount天后的日期
+  const y = dd.getFullYear();
+  const m = dd.getMonth()+1;//获取当前月份的日期
+  const d = dd.getDate();
+  return `${y}/${m}/${d}`;
+}

@@ -1,8 +1,13 @@
 <!-- index.wxml -->
-<view class="container">
-  <!-- <view>
-    <view>所有任务</view>
-  </view> -->
+<view class="container" style="padding-top:{{headHeight}}px">
+  <view class="m-header" style="padding-top: {{statusBarHeight}}px">
+    <view style="height: {{capsuleHeight}}px;" class="hd_left">
+      <view class="u-avatar">
+        <open-data type="userAvatarUrl" class="u-open-avatar"></open-data>
+      </view>
+    </view>
+    <view style="height: {{capsuleHeight}}px; line-height: {{capsuleHeight}}px" class="hd_center">Just Do！</view>
+  </view>
   <!-- <view class="m-list-group">
     <view class="m-list-item">
       今日
@@ -24,18 +29,21 @@
       </view>
     </view>
   </view> -->
-  <view class="m-list-group" wx:for="{{taskGroup}}" wx:key="idx" wx:for-item="taskItem" wx:for-index="idx">
-    <view class="m-list-item">
-      {{taskItem.title}}
-      <view class="badge {{taskItem.expand && 'z-expand'}}" data-idx="{{idx}}" bind:tap="handleExpand" wx:if="{{taskItem.taskList.length}}">{{taskItem.taskList.length}}</view>
-      <van-icon name="plus" wx:else />
-    </view>
-    <view class="m-list-content {{taskItem.expand && 'z-expand'}}">
-      <view class="u-item {{item.finsh && 'z-finish'}}" wx:for="{{taskItem.taskList}}" wx:key="item.task">
-        <van-checkbox value="{{ item.finsh }}" checked-color="#666" icon-size="12px" label-position="right" data-group="{{idx}}" data-idx="{{index}}" bind:change="onChange">
-          {{item.task}}
-        </van-checkbox>
-        <view class="u-item-line"></view>
+  <view class="g-main">
+    <view class="m-list-group" wx:for="{{taskGroup}}" wx:key="idx" wx:for-item="taskItem" wx:for-index="idx">
+      <view class="m-list-item">
+        <text data-idx="{{idx}}" bind:tap="handleExpand">{{taskItem.title}}</text>
+        <view class="badge {{taskItem.expand && 'z-expand'}}" data-idx="{{idx}}" bind:tap="handleExpand" wx:if="{{taskItem.taskList.length}}">{{taskItem.taskList.length}}</view>
+        <van-icon name="plus" data-idx="{{idx}}" bind:tap="handleAddItemTask" wx:else />
+      </view>
+      <view class="m-list-content {{taskItem.expand && 'z-expand'}}">
+        <view class="u-item {{item.finsh && 'z-finish'}}" wx:for="{{taskItem.taskList}}" wx:key="item.task">
+          <van-checkbox value="{{ item.finsh }}" checked-color="#666" icon-size="12px" label-disabled="{{true}}" label-position="right" data-id="{{item._id}}" data-group="{{idx}}" data-idx="{{index}}" bind:change="onChange">
+            <!-- {{item.task}} -->
+            <navigator url="/pages/taskDetail/taskDetail?id={{item._id}}" hover-class="navigator-hover">{{item.task}}</navigator>
+          </van-checkbox>
+          <view class="u-item-line"></view>
+        </view>
       </view>
     </view>
   </view>
