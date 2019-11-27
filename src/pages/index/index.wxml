@@ -6,7 +6,7 @@
         <open-data type="userAvatarUrl" class="u-open-avatar"></open-data>
       </view>
     </view>
-    <view style="height: {{capsuleHeight}}px; line-height: {{capsuleHeight}}px" class="hd_center">Just Do！</view>
+    <view style="height: {{capsuleHeight}}px; line-height: {{capsuleHeight}}px" class="hd_center">日和清单 Do!</view>
   </view>
   <!-- <view class="m-list-group">
     <view class="m-list-item">
@@ -36,15 +36,17 @@
         <view class="badge {{taskItem.expand && 'z-expand'}}" data-idx="{{idx}}" bind:tap="handleExpand" wx:if="{{taskItem.taskList.length}}">{{taskItem.taskList.length}}</view>
         <van-icon name="plus" data-idx="{{idx}}" bind:tap="handleAddItemTask" wx:else />
       </view>
-      <view class="m-list-content {{taskItem.expand && 'z-expand'}}">
-        <view class="u-item {{item.finsh && 'z-finish'}}" wx:for="{{taskItem.taskList}}" wx:key="item.task">
-          <van-checkbox value="{{ item.finsh }}" checked-color="#666" icon-size="12px" label-disabled="{{true}}" label-position="right" data-id="{{item._id}}" data-group="{{idx}}" data-idx="{{index}}" bind:change="onChange">
-            <!-- {{item.task}} -->
-            <navigator url="/pages/taskDetail/taskDetail?id={{item._id}}" hover-class="navigator-hover">{{item.task}}</navigator>
-          </van-checkbox>
-          <view class="u-item-line"></view>
+      <van-transition name="fade-up" show="{{ taskItem.expand }}" >
+        <view class="m-list-content z-expand">
+          <view class="u-item {{item.done && 'z-finish'}}" wx:for="{{taskItem.taskList}}" wx:key="item.task">
+            <van-checkbox value="{{ item.done }}" checked-color="#666" icon-size="36rpx" label-disabled="{{true}}" label-position="right" data-id="{{item._id}}" data-group="{{idx}}" data-idx="{{index}}" bind:change="onChange">
+              <!-- {{item.task}} -->
+              <navigator url="/pages/taskDetail/taskDetail?id={{item._id}}" hover-class="navigator-hover">{{item.task}}</navigator>
+            </van-checkbox>
+            <view class="u-item-line"></view>
+          </view>
         </view>
-      </view>
+      </van-transition>
     </view>
   </view>
   <!-- <view class="m-list-group">
@@ -54,8 +56,8 @@
       <van-icon name="plus" wx:else />
     </view>
     <view class="m-list-content {{expand[0] && 'z-expand'}}">
-      <view class="u-item {{item.finsh && 'z-finish'}}" wx:for="{{todayTaskList}}" wx:key="item.task">
-        <van-checkbox value="{{ item.finsh }}" checked-color="#666" icon-size="12px" label-position="right" data-idx="{{index}}" bind:change="onChange">
+      <view class="u-item {{item.done && 'z-finish'}}" wx:for="{{todayTaskList}}" wx:key="item.task">
+        <van-checkbox value="{{ item.done }}" checked-color="#666" icon-size="12px" label-position="right" data-idx="{{index}}" bind:change="onChange">
           {{item.task}}
         </van-checkbox>
         <view class="u-item-line"></view>
@@ -69,8 +71,8 @@
       <van-icon name="plus" wx:else />
     </view>
     <view class="m-list-content {{expand[1] && 'z-expand'}}">
-      <view class="u-item {{item.finsh && 'z-finish'}}" wx:for="{{taskList}}" wx:key="item.task">
-        <van-checkbox value="{{ item.finsh }}" checked-color="#666" icon-size="12px" label-position="right" data-idx="{{index}}" bind:change="onChange">
+      <view class="u-item {{item.done && 'z-finish'}}" wx:for="{{taskList}}" wx:key="item.task">
+        <van-checkbox value="{{ item.done }}" checked-color="#666" icon-size="12px" label-position="right" data-idx="{{index}}" bind:change="onChange">
           {{item.task}}
         </van-checkbox>
         <view class="u-item-line"></view>
@@ -85,7 +87,8 @@
       <!-- <view class="tip"><van-icon name="bell" size="34rpx" style="margin-right: 10rpx"/>以后再说</view> -->
     </view>
     <van-cell-group>
-      <van-field value="{{ newtask }}" center clearable placeholder="我想..." border="{{ false }}" use-button-slot bind:change="onInput" bind:confirm="handleAddTask">
+      <van-field value="{{ newtask }}" focus="{{isFocus}}" clearable placeholder="我想..." border="{{ false }}" use-button-slot bind:change="onInput" bind:confirm="handleAddTask">
+        <van-icon name="upgrade" slot="button" size="60rpx" color="#30A9DE" bind:tap="handleAddTask" />
         <van-icon name="upgrade" slot="button" size="60rpx" color="#30A9DE" wx:if="{{newtask.length}}" bind:tap="handleAddTask" />
         <van-icon name="upgrade" slot="button" size="60rpx" wx:else />
       </van-field>

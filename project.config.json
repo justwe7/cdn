@@ -15,9 +15,10 @@
 	"compileType": "miniprogram",
 	"appid": "wxc9d32cd8b4c4649d",
 	"projectname": "wx-auto_club",
-	"libVersion": "2.6.4",
+	"libVersion": "2.9.3",
 	"simulatorType": "wechat",
 	"simulatorPluginLibVersion": {},
+	"cloudfunctionTemplateRoot": "cloudfunctionTemplate",
 	"condition": {
 		"search": {
 			"current": -1,
@@ -43,9 +44,17 @@
 			"current": -1,
 			"list": [
 				{
-					"id": -1,
+					"id": 0,
 					"name": "pages/taskDetail/taskDetail",
 					"pathName": "pages/taskDetail/taskDetail",
+					"query": "id=98ec96175dde869400088006089bf1d1",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/setting/setting",
+					"pathName": "pages/setting/setting",
+					"query": "id=9937ce8a5ddd370900944b106fe07f6c",
 					"scene": null
 				}
 			]

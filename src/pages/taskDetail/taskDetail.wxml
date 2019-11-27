@@ -1,19 +1,30 @@
 <view class="container f-wing-blank">
   <view class="g-title f-wing-space">
-    {{taskDetail.task}}
+    <!-- {{taskDetail.task}} -->
+    <input class="u-title" maxlength="20" adjust-position="{{false}}" value="{{taskDetail.task}}" bind:blur="handleChangeTitle" placeholder="标题"/>
   </view>
   <view class="g-task-info">
     <view class="m-remind-box">
       <view class="tip-box" bind:tap="handleCheckDate">
         <van-icon name="bell" size="34rpx" color="#30A9DE"/>
         <!-- <view>2019-29-20</view> -->
-        <view>{{taskDate}}</view>
+        <block wx:if="{{taskDetail.remindDate}}">
+          <view>{{tools.formatDate(taskDetail.remindDate, 'yyyy-MM-dd')}}</view>
+          <view>{{tools.formatDate(taskDetail.remindDate, 'hh:mm')}}</view>
+        </block>
+        <view wx:else>
+          截止时间
+        </view>
+         <button class="f-reset-wx-button" style="padding-top: 16rpx"
+            catchtap="onSubscribe">
+          <van-switch checked="{{ taskDetail.notice }}" size="28rpx" bind:change="onChange" />
+        </button>
         <!-- <view>{{taskDate}}</view> -->
         <!-- <view>08：00</view> -->
       </view>
     </view>
     <view class="m-creat-date f-text-right">
-      <text class="u-title">创建于：</text><text class="u-content">2019年11月26日</text>
+      <text class="u-title">创建于：</text><text class="u-content">{{tools.formatDate(taskDetail.createDate, 'yyyy年MM月dd日 hh:mm:ss')}}</text>
     </view>
   </view>
   <view>
@@ -63,7 +74,7 @@
     <van-popup
       show="{{ showCalendar }}"
       position="bottom"
-      closeable="{{true}}"
+      bind:click-overlay="handleCloseCalendar"
       class="a-calendar-pop">
       <my-calendar lunar="{{true}}" days-color="{{demo1_days_style}}" active-type="square" weeks-type="cn" binddayClick="dayClick" />
     </van-popup>
@@ -78,13 +89,17 @@
           bind:cancel="onCancel"
         />
     </van-popup>
-    <view>
-        <button bindtap="clickLogText">打印结果</button>
-      </view>
-    <van-button type="danger" icon="delete" plain size="large" bind:confirm="handleDelete" bind:tap="handleShowDialog"><van-icon name="delete" />删除任务</van-button>
+    <view class="f-text-right">
+      <van-button type="info" bind:tap="onChangeDetail" round plain>修改详情</van-button>
+      <!-- <van-button type="danger" icon="delete"  bind:confirm="handleDelete" bind:tap="handleShowDialog"><van-icon name="delete" />删除任务</van-button> -->
+        <!-- <button bindtap="clickLogText">打印结果</button> -->
+    </view>
+    <van-button type="danger" class="a-delete-area" icon="delete" size="large" bind:confirm="handleDelete" bind:tap="handleShowDialog">删除任务</van-button>
     <van-dialog
       title="提示"
       message="确认删除此任务？"
+      bind:confirm="handleDelTask"
+      asyncClose="{{false}}"
       show="{{ showDialog }}"
       show-cancel-button
       bind:getuserinfo="getUserInfo"
@@ -93,3 +108,7 @@
     <!-- <van-button icon="star-o" type="primary">按钮</van-button> -->
   </view>
 </view>
+
+<wxs src="../../common/wxs/date.wxs" module="tools" />
+<!-- <view> {{tools.msg}} </view> -->
+<!-- <view> {{tools.bar(tools.FOO)}} </view> -->

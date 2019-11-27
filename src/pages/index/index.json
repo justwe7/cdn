@@ -1,4 +1,6 @@
 {
   "navigationStyle": "custom",
-  "usingComponents": {}
+  "usingComponents": {
+    "van-transition": "/lib/vant-weapp/transition/index"
+  }
 }

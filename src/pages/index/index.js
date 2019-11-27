@@ -2,11 +2,15 @@
 const app = getApp()
 const db = wx.cloud.database()
 const _ = db.command
+const { formatDate, subscribe } = require('../../common/js/utils.js')
+
 
 Page({
   data: {
     checked: false,
+    isFocus: false,
     newtask: '',
+    inputBottom: 0,
     taskGroup: [
       {
         title: '今日',
@@ -19,7 +23,7 @@ Page({
         taskList: [
           {
             task: '今晚打老虎',
-            finsh: false
+            done: false
           }
         ]
       },
@@ -33,11 +37,11 @@ Page({
     /* taskList: [
       {
         task: '今晚打老虎',
-        finsh: false
+        done: false
       },
       {
         task: '今晚打产品',
-        finsh: true
+        done: true
       }
     ], */
     tipTimeIdx: -1,
@@ -117,6 +121,11 @@ Page({
     })
   },
   handleAddItemTask(e) {
+    this.setData({
+      isFocus: true
+    })
+  },
+  openFn(e) {
     wx.cloud.callFunction({
       name: 'openapi',
       data: {
@@ -152,11 +161,24 @@ Page({
       tipTimeIdx: idx
     })
   },
+  onfocus: function(e) {
+    e.detail.height && this.setData({
+      inputBottom: e.detail.height
+    })
+  },
+  onblur() {
+    // this.isFocus = false;
+    // this.inputBottom = 0;
+    this.setData({
+      inputBottom: 0
+    })
+  },
   fetchList() {
     const groups = {
       list1: +new Date(`${GetDateStr()} 23:59:59`),
       list2: +new Date(`${GetDateStr(1)} 23:59:59`),
     }
+    console.log(`${GetDateStr()} 23:59:59`, `${GetDateStr(1)} 23:59:59`)
     db.collection('demo').where({
       remindDate: _.lt(groups.list1)
     })
@@ -170,7 +192,7 @@ Page({
       }
     })
     db.collection('demo').where({
-      remindDate: _.lt(groups.list2)
+      remindDate: _.lt(groups.list2).and(_.gte(groups.list2))
     })
     .get({
       success: (res) => {
@@ -209,18 +231,25 @@ Page({
       // data 字段表示需新增的 JSON 数据
       data: {
         task: this.data.newtask,
-        creatDate: +date,
+        createDate: +date,
         remindDate: quickTime[taskDateIdx],
         content: '',
-        finsh: false
+        // notice: this.data.tipTimeIdx>1, // 是否小程序提醒
+        done: false
       },
       success: (res) => {
         console.log(res._id)
+        const tplMsg = {
+          thing5: {value: this.data.newtask},
+          date1: {value: formatDate(quickTime[taskDateIdx])},
+          thing3: {value: '未设置详情'}
+        }
+        subscribe({message: tplMsg, isNotice: this.data.tipTimeIdx>1, taskId: res._id})
         this.setData({
           [curTaskList]: [...this.data.taskGroup[taskDateIdx].taskList, {
             task: this.data.newtask,
             _id: res._id,
-            finsh: false
+            done: false
           }],
           tipTimeIdx: -1,
           newtask: ""
@@ -244,11 +273,11 @@ Page({
     // target 触发事件的源组件。
 // currentTarget 事件绑定的当前组件。
     const {currentTarget: {dataset: { idx, group, id }}, detail} = e
-    const curState = `taskGroup[${group}].taskList[${idx}].finsh`
+    const curState = `taskGroup[${group}].taskList[${idx}].done`
     console.log(id)
     db.collection('demo').doc(id).update({
       data: {
-        finsh: detail
+        done: detail
       },
       success: (res) => {
         console.log(res)
@@ -257,7 +286,7 @@ Page({
         })
       }
     })
-    // this.data.taskList[idx].finsh = detail
+    // this.data.taskList[idx].done = detail
     
   },
 
