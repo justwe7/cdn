@@ -47,7 +47,7 @@
 					"id": 0,
 					"name": "pages/taskDetail/taskDetail",
 					"pathName": "pages/taskDetail/taskDetail",
-					"query": "id=98ec96175dde869400088006089bf1d1",
+					"query": "id=98ec96175ddf8db9002e97186ed0a3e1",
 					"scene": null
 				},
 				{
@@ -55,6 +55,13 @@
 					"name": "pages/setting/setting",
 					"pathName": "pages/setting/setting",
 					"query": "id=9937ce8a5ddd370900944b106fe07f6c",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/taskList/taskList",
+					"pathName": "pages/taskList/taskList",
+					"query": "id=98ec96175ddf8db9002e97186ed0a3e1",
 					"scene": null
 				}
 			]
