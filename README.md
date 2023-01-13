@@ -25,6 +25,17 @@
 4. 稍等一会即可访问，markdown引入图片直接通过 `![image](https://cdn.jsdelivr.net/gh/justwe7/cdn/images/2020/03/11/image.png)` 即可生效
 
 ### 其他事项
+#### 备选域名
+暂时用`testingcf.jsdelivr.net`会快一些
+
+下面的域名全部跳转 `GitHubusercontent` 了(301)：
+- gcore.jsdelivr.net
+- cdn.jsdelivr.net
+- fastly.jsdelivr.net
+- originfastly.jsdelivr.net
+- quantil.jsdelivr.net
+
+#### 引入文件
 > // 加载任何Github发布、提交或分支
 > https://cdn.jsdelivr.net/gh/user/repo@version/file
 > 
